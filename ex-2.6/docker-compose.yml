@@ -1,0 +1,43 @@
+version: "3.5"
+
+services:
+    frontend:
+        image: frontend
+        ports:
+            - 5000:5000
+        environment:
+            - API_URL=http://localhost:8000
+    
+    backend:
+        image: backend
+        ports:
+            - 8000:8000
+        environment:
+            - REDIS=redis
+            - API_URL=http://localhost:5000 
+            - DB_USERNAME=myuser
+            - DB_PASSWORD=mypass
+            - DB_NAME=dbname
+            - DB_HOST=db
+        depends_on: 
+            - db
+
+    redis:
+        image: redis
+    
+    
+    db:
+        image: postgres
+        restart: unless-stopped
+        volumes:
+            - database:/var/lib/postgresql/data
+        environment:
+          POSTGRES_PASSWORD: mypass
+          POSTGRES_USER: myuser
+          POSTGRES_DB: dbname
+        container_name: db
+          
+volumes:
+    database: 
+          
+       
